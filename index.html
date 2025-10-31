@@ -103,11 +103,12 @@ function extractLeftOperand(expr, bangIndex){
         if(depth === 0) break;
       }
     }
+    if(i < 0) return null;
     // return substring from i to bangIndex-1
     return {start:i, text: expr.slice(i, bangIndex)};
   } else {
-    // extract number or identifier to the left (digits, letters, dot)
-    const m = expr.slice(0, bangIndex).match(/([A-Za-z0-9_.()]+)$/);
+    // extract number or identifier to the left (digits, letters, dot, underscores)
+    const m = expr.slice(0, bangIndex).match(/([A-Za-z0-9_.]+)$/);
     if(m) {
       const text = m[1];
       const start = bangIndex - text.length;
@@ -117,12 +118,16 @@ function extractLeftOperand(expr, bangIndex){
   }
 }
 
-/* replace factorial occurrences like 5! or (2+3)! -> factorial(5) or factorial((2+3)) */
+/* replace factorial occurrences like 5! or (2+3)! -> factorial(5) or factorial((2+3)) 
+   We search from right to left so nested/multiple factorials are handled predictably.
+*/
 function replaceFactorials(expr){
   // loop until no '!' left or limit
-  let limit = 50;
+  let limit = 200;
+  // Work on a copy
   while(expr.includes('!') && limit-->0){
-    const idx = expr.indexOf('!');
+    // find last '!' to correctly bind to closest left operand
+    const idx = expr.lastIndexOf('!');
     const left = extractLeftOperand(expr, idx);
     if(!left) { break; }
     const leftText = left.text;
@@ -140,20 +145,25 @@ function buildExpression(raw, isDegrees){
   // normalize digits (Arabic-Indic), trim spaces
   let s = normalizeDigits(String(raw)).trim();
 
-  // replace display symbols with mathjs-friendly ones
+  // convert visible operation symbols to mathjs-friendly ones
   s = replaceAll(s, '×', '*');
   s = replaceAll(s, '÷', '/');
+  // convert Arabic 'minus' char to ASCII minus
   s = replaceAll(s, '−', '-');
   s = replaceAll(s, 'π', 'pi');
   // keep 'e' as e
-  // percent: convert 50% => (50/100)
+
+  // percent: convert number% => (number/100)
+  // also support (...)% like (2+3)% => ((2+3)/100)
+  s = s.replace(/(\([^)]+\))%/g, '($1/100)');
   s = s.replace(/([0-9.]+)%/g, '($1/100)');
 
   // replace factorial occurrences smartly
   s = replaceFactorials(s);
 
-  // remove accidental repeated operators like ++ or +* etc. (we won't auto-fix complex cases)
+  // remove accidental repeated spaces
   s = s.replace(/\s+/g,'');
+
   return s;
 }
 
@@ -190,9 +200,10 @@ function degreeScope(){
 /* validate basic structure before try-eval
    — ensures no operator at start/end (except unary minus)
    — checks balanced parentheses
+   — accounts for visible Unicode operators
 */
 function basicValidate(exprRaw){
-  const raw = String(exprRaw).trim();
+  const raw = String(exprRaw || '').trim();
   if(raw.length === 0) return {ok:false, msg:'الشاشة فارغة'};
   // check parentheses balance
   let depth = 0;
@@ -202,10 +213,14 @@ function basicValidate(exprRaw){
     if(depth < 0) return {ok:false, msg:'أقواس غير متطابقة'};
   }
   if(depth !== 0) return {ok:false, msg:'أقواس غير متطابقة'};
-  // prevent operators at the very start except '-' or functions like sin(
-  if(/^[+\/*^%]/.test(raw)) return {ok:false, msg:'بداية التعبير برمز غير صالح'};
-  // prevent operator before closing paren at end
-  if(/[+\-*/^%]$/.test(raw)) return {ok:false, msg:'التعبير لا يمكن أن ينتهي بعامل'};
+
+  // treat visible operators as equivalent to ASCII ones
+  const startBad = /^[+\/*^%×÷−−–]/.test(raw); // include various minus/dash chars
+  if(startBad) return {ok:false, msg:'بداية التعبير برمز غير صالح'};
+
+  // prevent expression ending with operator (including visible ones)
+  if(/[+\-*/^%×÷−]$/.test(raw)) return {ok:false, msg:'التعبير لا يمكن أن ينتهي بعامل'};
+
   return {ok:true};
 }
 
@@ -219,16 +234,17 @@ function calculate(){
 
   try{
     const expr = buildExpression(raw, isDegrees);
-    // final safety check: expr should contain only allowed chars
-    if(!/^[0-9A-Za-z().,+\-*/^%!_ ]*$/.test(expr)){
-      // note: factorials already replaced; still, reject suspicious chars
-      // allow 'factorial' and letters for functions, so relax:
-      if(!/^[0-9A-Za-z().,+\-*/^% ]*$/.test(expr)){
-        throw new Error('رموز غير مسموحة بعد المعالجة');
-      }
+    // final safety check: allow digits, letters, mathjs operators, parentheses, dot, comma, and function names
+    // whitelist common tokens (pi, e, factorial, pow, sqrt, sin, cos, etc.)
+    if(!/^[0-9A-Za-z().,+\-*/^% _]+$/.test(expr)){
+      throw new Error('رموز غير مسموحة بعد المعالجة');
     }
 
-    const res = math.evaluate(expr, degreeScope());
+    const scope = Object.assign({pi: Math.PI, e: Math.E}, degreeScope());
+    // expose factorial to mathjs if not present
+    const config = {predictable: true};
+    // math.evaluate will throw if expression is invalid; catch below
+    const res = math.evaluate(expr, scope);
     // handle NaN/undefined
     if(res === undefined || res === null || (typeof res === 'number' && isNaN(res))){
       throw new Error('النتيجة غير معرّفة');
@@ -236,7 +252,6 @@ function calculate(){
     display.value = String(res);
   } catch(err){
     console.error('calc error:', err, err && err.toString && err.toString());
-    // friendly alert showing short message
     alert('يوجد خطأ في العملية أو الرموز.\nرسالة الخطأ: ' + (err && err.message ? err.message : String(err)));
   }
 }
@@ -259,8 +274,8 @@ document.addEventListener('keydown', (e) => {
 display.addEventListener('paste', (ev) => {
   ev.preventDefault();
   const text = (ev.clipboardData || window.clipboardData).getData('text') || '';
-  // normalize and append cleaned text (don't allow dangerous chars)
-  const cleaned = text.replace(/[^\d\u06F0-\u06F9\u0660-\u0669A-Za-z()+\-*/^%!. ,]/g, '');
+  // normalize digits and allow a limited set of chars (including Unicode operators)
+  const cleaned = text.replace(/[^\d\u06F0-\u06F9\u0660-\u0669A-Za-z()+\-*/^%!. ,π×÷−]/g, '');
   append(cleaned);
 });
 </script>
