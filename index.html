@@ -1,283 +1,473 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>آلة حاسبة علمية — مهيمن</title>
-<script src="https://cdn.jsdelivr.net/npm/mathjs@11.8.0/dist/math.min.js"></script>
-<style>
-body{background:#0f172a;color:#fff;font-family:"Tajawal",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;padding:20px;}
-h1{margin-bottom:14px;color:#38bdf8;text-shadow:0 0 10px #38bdf8;font-size:1.6rem;}
-.calculator{background:#1e293b;border-radius:16px;padding:16px;box-shadow:0 0 20px rgba(14,165,233,0.12);width:360px;max-width:100%;}
-#display{width:100%;height:56px;font-size:1.2rem;text-align:right;border:none;outline:none;border-radius:10px;margin-bottom:12px;padding:8px 12px;background:#0f172a;color:#38bdf8;box-sizing:border-box;}
-.buttons{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
-button{padding:14px 8px;font-size:1rem;border:none;border-radius:8px;cursor:pointer;background:#334155;color:#fff;transition:.12s;user-select:none;}
-button:hover{transform:translateY(-2px);background:#0ea5e9;color:#052025;}
-.op{background:#475569;}
-.equals{background:linear-gradient(90deg,#06b6d4,#0891b2);color:#fff;grid-column:span 2;}
-.clear{background:#ef4444;color:#fff;}
-.mode{background:#f59e0b;color:#07121a;}
-.small{font-size:.9rem;padding:10px 6px;}
-footer{margin-top:10px;font-size:.8rem;color:#94a3b8;text-align:center;}
-/* small visual feedback */
-button:active{transform:translateY(0);opacity:0.95;}
-</style>
-</head>
-<body>
-<h1>آلة حاسبة علمية — مهيمن</h1>
-<div class="calculator" role="application" aria-label="آلة حاسبة علمية">
-  <input id="display" type="text" readonly aria-label="شاشة الآلة الحاسبة">
-  <div class="buttons">
-    <button class="small mode" id="degToggle">RAD</button>
-    <button class="small op" onclick="insertFunc('sin')">sin</button>
-    <button class="small op" onclick="insertFunc('cos')">cos</button>
-    <button class="small op" onclick="insertFunc('tan')">tan</button>
-    <button class="small op" onclick="insertFunc('log10')">log</button>
-    <button class="small op" onclick="insertFunc('log')">ln</button>
+<!doctype html>
 
-    <button onclick="append('(')">(</button>
-    <button onclick="append(')')">)</button>
-    <button onclick="append('π')">π</button>
-    <button onclick="append('e')">e</button>
-    <button class="op" onclick="insertFunc('sqrt')">√</button>
-    <button class="op" onclick="append('!')">n!</button>
+<html lang="ar" dir="rtl">  
+<head>  
+  <meta charset="utf-8" />  
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />  
+  <title>مهيمن — العد التنازلي</title>  
+  <link rel="stylesheet" href="styles.css" />  
+</head>  
+<body>  
+  <main class="app-shell">  
+    <div class="card" role="region" aria-labelledby="brand-title">  
+      <header class="brand">  
+        <h1 id="brand-title" class="title">مهيمن</h1>  
+        <p class="subtitle">العد التنازلي لامتحان الطبيعيات</p>  
+      </header>  <section class="countdown" aria-live="polite">  
+    <div class="time-grid" id="time-grid">  
+      <div class="time-box" aria-hidden="false">  
+        <span id="days" class="num">--</span>  
+        <span class="label">أيام</span>  
+      </div>  
+      <div class="time-box">  
+        <span id="hours" class="num">--</span>  
+        <span class="label">ساعات</span>  
+      </div>  
+      <div class="time-box">  
+        <span id="minutes" class="num">--</span>  
+        <span class="label">دقائق</span>  
+      </div>  
+      <div class="time-box">  
+        <span id="seconds" class="num">--</span>  
+        <span class="label">ثواني</span>  
+      </div>  
+    </div>  
+    <p id="countdown-note" class="note">العد التنازلي يبدأ الآن وينتهي يوم الأحد القادم.</p>  
+  </section>  
 
-    <button onclick="append('7')">7</button>
-    <button onclick="append('8')">8</button>
-    <button onclick="append('9')">9</button>
-    <button class="op" onclick="append('÷')">÷</button>
-    <button class="op" onclick="append('^')">^</button>
-    <button class="op" onclick="insertFunc('abs')">abs</button>
+  <section class="contact">  
+    <h2 class="contact-title">تواصل معي</h2>  
 
-    <button onclick="append('4')">4</button>
-    <button onclick="append('5')">5</button>
-    <button onclick="append('6')">6</button>
-    <button class="op" onclick="append('×')">×</button>
-    <button class="op" onclick="insertFunc('pow')">pow</button>
-    <button class="op" onclick="append('%')">%</button>
+    <div class="contact-row">  
+      <a id="mailto-link" class="email-btn" href="mailto:mohyman61@gmail.com?subject=رسالة%20من%20مهيمن" aria-label="مراسلة عبر البريد">  
+        <svg class="mail-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">  
+          <path fill="currentColor" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>  
+        </svg>  
+        مراسلة: mohyman61@gmail.com  
+      </a>  
 
-    <button onclick="append('1')">1</button>
-    <button onclick="append('2')">2</button>
-    <button onclick="append('3')">3</button>
-    <button class="op" onclick="append('−')">−</button>
-    <button onclick="insertFunc('exp')">exp</button>
-    <button class="op" onclick="insertFunc('sqrt')">root</button>
+      <form id="contact-form" class="contact-form" autocomplete="off" novalidate>  
+        <label class="vis-label">  
+          <span class="sr-only">الاسم</span>  
+          <input id="name" name="name" type="text" placeholder="الاسم" required />  
+        </label>  
 
-    <button onclick="append('0')">0</button>
-    <button onclick="append('.')">.</button>
-    <button class="equals" onclick="calculate()">=</button>
-    <button onclick="append('+')">+</button>
-    <button class="clear" onclick="clearDisplay()">C</button>
-    <button onclick="backspace()">⌫</button>
-  </div>
+        <label class="vis-label">  
+          <span class="sr-only">الرسالة</span>  
+          <textarea id="message" name="message" rows="4" placeholder="اكتب رسالتك..." required></textarea>  
+        </label>  
+
+        <div class="form-actions">  
+          <button id="send-mailto" type="button" class="btn primary" aria-label="افتح البريد لإرسال">  
+            <svg class="mail-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">  
+              <path fill="currentColor" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>  
+            </svg>  
+            افتح البريد لإرسال  
+          </button>  
+
+          <button id="draft-btn" type="submit" class="btn secondary" aria-label="تجهيز رسالة">  
+            تجهيز كمسودة  
+          </button>  
+        </div>  
+
+        <p id="form-note" class="form-note" role="status" aria-live="polite"></p>  
+      </form>  
+    </div>  
+  </section>  
+
+  <footer class="footer">  
+    <small>© مهيمن — العد التنازلي لامتحان الطبيعيات</small>  
+  </footer>  
 </div>
-<footer>اضغط Enter للحساب — ESC للمسح — Backspace للحذف</footer>
 
-<script>
-/* ======== Helpers & normalization ======== */
-
-/* map Arabic-Indic + Eastern Arabic digits to western digits */
-function normalizeDigits(s){
-  const map = {
-    '٠':'0','١':'1','٢':'2','٣':'3','٤':'4','٥':'5','٦':'6','٧':'7','٨':'8','٩':'9',
-    '۰':'0','۱':'1','۲':'2','۳':'3','۴':'4','۵':'5','۶':'6','۷':'7','۸':'8','۹':'9'
-  };
-  return s.replace(/[\u0660-\u0669\u06F0-\u06F9]/g, ch => map[ch]||ch);
+  </main>    <script src="script.js"></script>  </body>  
+        </html>:root{
+--bg-1: #071025; /* very dark blue /
+--bg-2: #0b1228; / deep navy /
+--glass: rgba(255,255,255,0.035);
+--glass-2: rgba(255,255,255,0.02);
+--accent-start: #7c4dff; / purple /
+--accent-end: #3fb1ff;   / blue */
+--muted: #9fb0c9;
+--card-border: rgba(255,255,255,0.04);
+--shadow: rgba(2,6,23,0.7);
+--glass-stroke: rgba(124,77,255,0.08);
+--radius: 20px;
+--max-card-width: 880px;
+--pad-mobile: 20px;
+--pad-desktop: 28px;
+--font-sans: "Tajawal", "Noto Naskh Arabic", "Segoe UI", "Arial", sans-serif;
 }
 
-/* replace all occurrences of a pattern, safe */
-function replaceAll(str, find, replace){
-  return str.split(find).join(replace);
+{ box-sizing: border-box; }
+html,body { height:100%; margin:0; font-family: var(--font-sans); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+body {
+background: radial-gradient(800px 400px at 10% 15%, rgba(124,77,255,0.09), transparent 8%),
+radial-gradient(600px 300px at 90% 85%, rgba(59,177,255,0.05), transparent 6%),
+linear-gradient(180deg, var(--bg-1), var(--bg-2));
+color: #eaf4ff;
+padding: 20px;
+display:flex;
+align-items:center;
+justify-content:center;
+min-height:100vh;
+overflow-x:hidden;
 }
 
-/* find matching parentheses to extract the full parenthesized expression ending at index */
-function extractLeftOperand(expr, bangIndex){
-  // if char before ! is ')' then find matching '('
-  let i = bangIndex - 1;
-  if(expr[i] === ')'){
-    let depth = 0;
-    for(; i>=0; i--){
-      if(expr[i] === ')') depth++;
-      else if(expr[i] === '('){
-        depth--;
-        if(depth === 0) break;
-      }
-    }
-    if(i < 0) return null;
-    // return substring from i to bangIndex-1
-    return {start:i, text: expr.slice(i, bangIndex)};
-  } else {
-    // extract number or identifier to the left (digits, letters, dot, underscores)
-    const m = expr.slice(0, bangIndex).match(/([A-Za-z0-9_.]+)$/);
-    if(m) {
-      const text = m[1];
-      const start = bangIndex - text.length;
-      return {start, text};
-    }
-    return null;
-  }
+
+/* App shell centers everything vertically & horizontally */
+.app-shell { width:100%; display:flex; align-items:center; justify-content:center; padding: 24px; }
+
+/* Card / main container */
+.card{
+width:100%;
+max-width: var(--max-card-width);
+margin: 0 auto;
+background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+border-radius: var(--radius);
+padding: var(--pad-desktop);
+border: 1px solid var(--card-border);
+box-shadow: 0 12px 40px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.02);
+backdrop-filter: blur(10px) saturate(1.05);
+transform-origin: center;
+animation: fadeIn 600ms ease both;
+position: relative;
+overflow: hidden;
 }
 
-/* replace factorial occurrences like 5! or (2+3)! -> factorial(5) or factorial((2+3)) 
-   We search from right to left so nested/multiple factorials are handled predictably.
-*/
-function replaceFactorials(expr){
-  // loop until no '!' left or limit
-  let limit = 200;
-  // Work on a copy
-  while(expr.includes('!') && limit-->0){
-    // find last '!' to correctly bind to closest left operand
-    const idx = expr.lastIndexOf('!');
-    const left = extractLeftOperand(expr, idx);
-    if(!left) { break; }
-    const leftText = left.text;
-    const before = expr.slice(0, left.start);
-    const after = expr.slice(idx+1);
-    // wrap leftText in factorial(...)
-    expr = before + 'factorial(' + leftText + ')' + after;
-  }
-  return expr;
+/* soft light spots for luxury feel */
+.card::before, .card::after{
+content: "";
+position: absolute;
+pointer-events: none;
+filter: blur(60px);
+opacity: 0.12;
+}
+.card::before {
+width: 420px; height: 420px; top: -120px; left: -60px;
+background: radial-gradient(circle at 30% 30%, rgba(124,77,255,0.5), transparent 30%);
+}
+.card::after {
+width: 360px; height: 360px; bottom: -100px; right: -50px;
+background: radial-gradient(circle at 70% 70%, rgba(63,177,255,0.35), transparent 30%);
 }
 
-/* preprocess full display text -> expression for mathjs */
-function buildExpression(raw, isDegrees){
-  if(raw === null || raw === undefined) return '';
-  // normalize digits (Arabic-Indic), trim spaces
-  let s = normalizeDigits(String(raw)).trim();
+/* Brand */
+.brand { display:flex; flex-direction:column; gap:6px; align-items:center; margin-bottom:14px; text-align:center; }
+.title {
+font-size: 34px;
+margin:0;
+background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+font-weight: 800;
+letter-spacing: 0.6px;
+text-shadow: 0 6px 24px rgba(124,77,255,0.12);
+}
+.subtitle { margin:0; color: var(--muted); font-size:14px; }
 
-  // convert visible operation symbols to mathjs-friendly ones
-  s = replaceAll(s, '×', '*');
-  s = replaceAll(s, '÷', '/');
-  // convert Arabic 'minus' char to ASCII minus
-  s = replaceAll(s, '−', '-');
-  s = replaceAll(s, 'π', 'pi');
-  // keep 'e' as e
+/* Countdown */
+.countdown { margin: 14px 0 18px 0; padding: 14px; border-radius: 14px; background: linear-gradient(180deg, var(--glass), var(--glass-2)); border: 1px solid var(--glass-stroke); }
 
-  // percent: convert number% => (number/100)
-  // also support (...)% like (2+3)% => ((2+3)/100)
-  s = s.replace(/(\([^)]+\))%/g, '($1/100)');
-  s = s.replace(/([0-9.]+)%/g, '($1/100)');
+/* time grid */
+.time-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap: 12px; align-items:center; justify-items:stretch; }
 
-  // replace factorial occurrences smartly
-  s = replaceFactorials(s);
-
-  // remove accidental repeated spaces
-  s = s.replace(/\s+/g,'');
-
-  return s;
+/* single time box */
+.time-box {
+background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+border-radius: 12px;
+padding: 12px;
+text-align:center;
+border: 1px solid rgba(255,255,255,0.02);
+min-height: 80px;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+transition: transform 220ms ease, box-shadow 220ms ease;
+position: relative;
+overflow: hidden;
 }
 
-/* ======== UI & Logic ======== */
+/* subtle glow/pulse animation applied when value changes */
+.time-box.pulse {
+animation: pulse 650ms ease;
+box-shadow: 0 8px 30px rgba(124,77,255,0.10);
+}
 
-const display = document.getElementById('display');
-const degToggle = document.getElementById('degToggle');
-let isDegrees = false;
-const math = window.math;
+/* large numeric */
+.num { font-size: 26px; font-weight: 800; line-height:1; color: #ffffff; letter-spacing:0.5px; }
 
-// toggler
-degToggle.addEventListener('click', () => {
-  isDegrees = !isDegrees;
-  degToggle.textContent = isDegrees ? 'DEG' : 'RAD';
+/* label */
+.label { margin-top:8px; color: var(--muted); font-size:13px; }
+
+/* note */
+.note { margin-top:10px; color: var(--muted); font-size:13px; text-align:center; }
+
+/* contact section */
+.contact { margin-top:6px; }
+.contact-title { margin:0 0 8px 0; color: var(--muted); font-size:14px; text-align:center; }
+
+/* contact row layout */
+.contact-row { display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; justify-content:center; }
+
+/* email button */
+.email-btn{
+display:inline-flex;
+gap:10px;
+align-items:center;
+min-width:240px;
+padding:12px 16px;
+border-radius: 12px;
+background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
+color: white;
+text-decoration:none;
+font-weight:700;
+box-shadow: 0 10px 30px rgba(124,77,255,0.16);
+transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
+border: none;
+}
+.email-btn:hover, .email-btn:focus { transform: translateY(-3px); box-shadow: 0 18px 40px rgba(124,77,255,0.22); outline: none; }
+
+/* mail icon inside buttons */
+.mail-icon { width:20px; height:20px; fill: currentColor; opacity:0.98; }
+
+/* form */
+.contact-form { min-width: 260px; max-width: 520px; display:flex; flex-direction:column; gap:8px; }
+.vis-label { display:block; }
+.contact-form input, .contact-form textarea {
+width:100%;
+padding:10px 12px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,0.04);
+background: rgba(255,255,255,0.015);
+color: inherit;
+font-size:14px;
+resize: vertical;
+transition: box-shadow 140ms ease, transform 140ms ease;
+}
+.contact-form input::placeholder, .contact-form textarea::placeholder { color: rgba(255,255,255,0.22); }
+.contact-form input:focus, .contact-form textarea:focus { box-shadow: 0 6px 18px rgba(63,177,255,0.08); outline: none; transform: translateY(-2px); }
+
+/* buttons /
+.form-actions { display:flex; gap:8px; align-items:center; justify-content:flex-start; flex-wrap:wrap; }
+.btn {
+display:inline-flex;
+align-items:center;
+gap:8px;
+padding:10px 12px;
+border-radius: 12px;
+font-weight:700;
+cursor:pointer;
+border:none;
+transition: transform 110ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+.btn.primary {
+background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
+color:white;
+box-shadow: 0 8px 30px rgba(124,77,255,0.12);
+}
+.btn.secondary {
+background: transparent;
+color: var(--muted);
+border: 1px solid rgba(255,255,255,0.04);
+}
+.btn:active { transform: scale(0.98); } / press effect */
+
+/* form note */
+.form-note { color: var(--muted); font-size:13px; margin-top:6px; }
+
+/* footer */
+.footer { text-align:center; margin-top:12px; color: var(--muted); font-size:13px; }
+
+/* Accessibility helpers */
+.sr-only { position:absolute !important; height:1px; width:1px; overflow:hidden; clip:rect(1px,1px,1px,1px); white-space:nowrap; }
+
+/* Mobile responsiveness */
+@media (max-width:640px) {
+.card { padding: var(--pad-mobile); border-radius: 16px; }
+.title { font-size:28px; }
+.time-grid { grid-template-columns: repeat(2, 1fr); gap:10px; }
+.time-box { min-height:72px; padding:10px; }
+.num { font-size:22px; }
+.contact-row { flex-direction:column; align-items:stretch; }
+.email-btn { width:100%; justify-content:center; min-width:0; }
+.contact-form { width:100%; }
+}
+
+/* Smaller phones */
+@media (max-width:380px) {
+.time-grid { grid-template-columns: repeat(2, 1fr); gap:8px; }
+.num { font-size:20px; }
+.title { font-size:22px; }
+}
+
+/* Animations */
+@keyframes fadeIn {
+from { opacity:0; transform: translateY(6px) scale(0.995); }
+to { opacity:1; transform: translateY(0) scale(1); }
+}
+@keyframes pulse {
+0% { transform: scale(1); box-shadow: 0 6px 18px rgba(124,77,255,0.06); }
+50% { transform: scale(1.03); box-shadow: 0 18px 40px rgba(124,77,255,0.16); }
+100% { transform: scale(1); box-shadow: 0 6px 18px rgba(124,77,255,0.06); }
+}// script.js
+// تحديث: يحسّن العد التنازلي ويضيف أنيميشن خفيفة (Fade-in عند التحميل، pulse عند تحديث قيمة، تأثير ضغط على الأزرار).
+(function(){
+// احصل على أقرب يوم أحد القادم (نهاية يوم الأحد 23:59:59.999)
+function getNextSundayEnd() {
+const now = new Date();
+const today = now.getDay(); // 0..6 (0 = Sunday)
+const daysUntilSunday = (7 - today) % 7;
+const sunday = new Date(now);
+sunday.setDate(now.getDate() + daysUntilSunday);
+sunday.setHours(23,59,59,999);
+if (sunday <= now) {
+sunday.setDate(sunday.getDate() + 7);
+}
+return sunday;
+}
+
+const target = getNextSundayEnd();
+
+// DOM references
+const daysEl = document.getElementById('days');
+const hoursEl = document.getElementById('hours');
+const minutesEl = document.getElementById('minutes');
+const secondsEl = document.getElementById('seconds');
+const noteEl = document.getElementById('countdown-note');
+const timeBoxes = Array.from(document.querySelectorAll('.time-box'));
+const card = document.querySelector('.card');
+
+// initial fade-in handled via CSS animation; ensure reduced-motion respected
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (prefersReducedMotion) {
+card.style.animation = 'none';
+}
+
+// helper to format numbers
+function fmt(n) { return String(n).padStart(2, '0'); }
+
+// keep previous values to animate changes
+let prev = { days: null, hours: null, minutes: null, seconds: null };
+
+function updateCountdown() {
+const now = new Date();
+let diff = Math.max(0, target - now);
+
+if (diff <= 0) {  
+  daysEl.textContent = '0';  
+  hoursEl.textContent = '00';  
+  minutesEl.textContent = '00';  
+  secondsEl.textContent = '00';  
+  noteEl.textContent = 'انتهى العد التنازلي — حظاً موفقاً في امتحان الطبيعيات!';  
+  clearInterval(timer);  
+  return;  
+}  
+
+const sec = Math.floor(diff / 1000) % 60;  
+const min = Math.floor(diff / (1000 * 60)) % 60;  
+const hr  = Math.floor(diff / (1000 * 60 * 60)) % 24;  
+const days = Math.floor(diff / (1000 * 60 * 60 * 24));  
+
+// update each with pulse when changed  
+applyIfChanged('days', days, daysEl);  
+applyIfChanged('hours', hr, hoursEl, true);  
+applyIfChanged('minutes', min, minutesEl, true);  
+applyIfChanged('seconds', sec, secondsEl, true);
+
+}
+
+// apply change and animation
+function applyIfChanged(key, value, el, pad = false) {
+const str = pad ? fmt(value) : String(value);
+if (prev[key] === null) {
+el.textContent = str;
+prev[key] = value;
+return;
+}
+if (prev[key] !== value) {
+el.textContent = str;
+prev[key] = value;
+
+// apply pulse animation to the parent .time-box  
+  if (!prefersReducedMotion) {  
+    const box = el.closest('.time-box');  
+    if (box) {  
+      box.classList.remove('pulse');  
+      // reflow to restart animation  
+      void box.offsetWidth;  
+      box.classList.add('pulse');  
+      // remove class after animation duration  
+      setTimeout(() => box.classList.remove('pulse'), 700);  
+    }  
+  }  
+}
+
+}
+
+// initial update & interval
+updateCountdown();
+const timer = setInterval(updateCountdown, 1000);
+
+// Contact form logic (mailto)
+const form = document.getElementById('contact-form');
+const formNote = document.getElementById('form-note');
+const sendMailtoBtn = document.getElementById('send-mailto');
+const draftBtn = document.getElementById('draft-btn');
+
+function createMailto(name, message) {
+const subject = encodeURIComponent(رسالة من ${name} عبر مهيمن);
+const body = encodeURIComponent(المرسل: ${name}\n\nالرسالة:\n${message}\n\n--\nأرسلت عبر رابط مهيمن);
+return mailto:mohyman61@gmail.com?subject=${subject}&body=${body};
+}
+
+// تجهيز مسودة (يعرض رابط قابل للنقر)
+form.addEventListener('submit', function(e){
+e.preventDefault();
+const name = (document.getElementById('name').value || '').trim();
+const message = (document.getElementById('message').value || '').trim();
+
+if (!name || !message) {  
+  formNote.textContent = 'الرجاء ملء الاسم والرسالة.';  
+  return;  
+}  
+
+const mailto = createMailto(name, message);  
+formNote.innerHTML = `تم تجهيز البريد. <a href="${mailto}">افتح تطبيق البريد لإرسال الرسالة</a>.`;
+
 });
 
-function append(value){ display.value += value; }
-function insertFunc(name){ display.value += name + '('; }
-function clearDisplay(){ display.value = ''; }
-function backspace(){ display.value = display.value.slice(0,-1); }
+// افتح تطبيق البريد (mailto)
+sendMailtoBtn.addEventListener('click', function(){
+const name = (document.getElementById('name').value || '').trim();
+const message = (document.getElementById('message').value || '').trim();
 
-/* build degree-aware scope for trig functions */
-function degreeScope(){
-  return {
-    sin: x => (isDegrees? math.sin(math.unit(x,'deg')) : math.sin(x)),
-    cos: x => (isDegrees? math.cos(math.unit(x,'deg')) : math.cos(x)),
-    tan: x => (isDegrees? math.tan(math.unit(x,'deg')) : math.tan(x)),
-    asin: x => (isDegrees? math.asin(x) * 180 / math.pi : math.asin(x)),
-    acos: x => (isDegrees? math.acos(x) * 180 / math.pi : math.acos(x)),
-    atan: x => (isDegrees? math.atan(x) * 180 / math.pi : math.atan(x))
-  };
-}
+if (!name || !message) {  
+  formNote.textContent = 'الرجاء ملء الاسم والرسالة قبل فتح البريد.';  
+  return;  
+}  
 
-/* validate basic structure before try-eval
-   — ensures no operator at start/end (except unary minus)
-   — checks balanced parentheses
-   — accounts for visible Unicode operators
-*/
-function basicValidate(exprRaw){
-  const raw = String(exprRaw || '').trim();
-  if(raw.length === 0) return {ok:false, msg:'الشاشة فارغة'};
-  // check parentheses balance
-  let depth = 0;
-  for(let ch of raw){
-    if(ch === '(') depth++;
-    if(ch === ')') depth--;
-    if(depth < 0) return {ok:false, msg:'أقواس غير متطابقة'};
-  }
-  if(depth !== 0) return {ok:false, msg:'أقواس غير متطابقة'};
+const mailto = createMailto(name, message);  
 
-  // treat visible operators as equivalent to ASCII ones
-  const startBad = /^[+\/*^%×÷−−–]/.test(raw); // include various minus/dash chars
-  if(startBad) return {ok:false, msg:'بداية التعبير برمز غير صالح'};
+// small click animation for accessibility and feedback  
+if (!prefersReducedMotion) {  
+  sendMailtoBtn.animate([{ transform: 'scale(1)' }, { transform: 'scale(0.97)' }, { transform: 'scale(1)' }], { duration: 180 });  
+}  
 
-  // prevent expression ending with operator (including visible ones)
-  if(/[+\-*/^%×÷−]$/.test(raw)) return {ok:false, msg:'التعبير لا يمكن أن ينتهي بعامل'};
+// open mail client  
+window.location.href = mailto;
 
-  return {ok:true};
-}
-
-function calculate(){
-  const raw = display.value;
-  const valid = basicValidate(raw);
-  if(!valid.ok){
-    alert('خطأ: ' + valid.msg + '\nتأكد من تركيب التعبير (أقواس، أرقام، عمليات).');
-    return;
-  }
-
-  try{
-    const expr = buildExpression(raw, isDegrees);
-    // final safety check: allow digits, letters, mathjs operators, parentheses, dot, comma, and function names
-    // whitelist common tokens (pi, e, factorial, pow, sqrt, sin, cos, etc.)
-    if(!/^[0-9A-Za-z().,+\-*/^% _]+$/.test(expr)){
-      throw new Error('رموز غير مسموحة بعد المعالجة');
-    }
-
-    const scope = Object.assign({pi: Math.PI, e: Math.E}, degreeScope());
-    // expose factorial to mathjs if not present
-    const config = {predictable: true};
-    // math.evaluate will throw if expression is invalid; catch below
-    const res = math.evaluate(expr, scope);
-    // handle NaN/undefined
-    if(res === undefined || res === null || (typeof res === 'number' && isNaN(res))){
-      throw new Error('النتيجة غير معرّفة');
-    }
-    display.value = String(res);
-  } catch(err){
-    console.error('calc error:', err, err && err.toString && err.toString());
-    alert('يوجد خطأ في العملية أو الرموز.\nرسالة الخطأ: ' + (err && err.message ? err.message : String(err)));
-  }
-}
-
-/* keyboard support (maps * / to × ÷ visually to keep UI) */
-document.addEventListener('keydown', (e) => {
-  const allowed='0123456789+-*/.^()%';
-  if(allowed.includes(e.key)){
-    e.preventDefault();
-    const map = {'/':'÷','*':'×'};
-    append(map[e.key] || e.key);
-    return;
-  }
-  if(e.key === 'Enter'){ e.preventDefault(); calculate(); return; }
-  if(e.key === 'Backspace'){ e.preventDefault(); backspace(); return; }
-  if(e.key === 'Escape'){ e.preventDefault(); clearDisplay(); return; }
 });
 
-/* paste sanitization */
-display.addEventListener('paste', (ev) => {
-  ev.preventDefault();
-  const text = (ev.clipboardData || window.clipboardData).getData('text') || '';
-  // normalize digits and allow a limited set of chars (including Unicode operators)
-  const cleaned = text.replace(/[^\d\u06F0-\u06F9\u0660-\u0669A-Za-z()+\-*/^%!. ,π×÷−]/g, '');
-  append(cleaned);
-});
-</script>
-</body>
-</html>
+// ensure no horizontal overflow on load/resizes by keeping card padding within viewport
+function adjustForViewport() {
+const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+const pad = vw < 420 ? 14 : (vw < 600 ? 18 : 28);
+document.documentElement.style.setProperty('--pad-desktop', ${pad}px);
+}
+adjustForViewport();
+window.addEventListener('resize', adjustForViewport);
+
+})();
